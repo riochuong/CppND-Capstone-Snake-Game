@@ -3,7 +3,10 @@
 #include "input_dispatcher.h"
 
 
-
+/**
+ * Create map to dispatch correct input key to correct snakes depending on 
+ * game mode
+ */
 InputDispatcher::InputDispatcher(MenuOpt menuOpt, std::vector<Snake> &snakes) {
     this->snakes = std::vector<Snake>(snakes);
     this->game_mode = menuOpt;
@@ -48,6 +51,8 @@ InputDispatcher::InputDispatcher(MenuOpt menuOpt, std::vector<Snake> &snakes) {
             {SDLK_DOWN, arrow_snake},
             {SDLK_LEFT, arrow_snake},
             {SDLK_RIGHT, arrow_snake},
+            {SDLK_RSHIFT, &snakes[0]}, // increase speed 
+            {SDLK_RCTRL, &snakes[0]}, // decrease speed 
             {SDLK_w, awsd_snake},
             {SDLK_s, awsd_snake},
             {SDLK_a, awsd_snake},
@@ -79,41 +84,3 @@ void InputDispatcher::DispatchInput() {
         }       
     }
 }
-
-
-// void Controller::ChangeDirection(Snake &snake, Snake::Direction input,
-//                                  Snake::Direction opposite) const {
-//   if (snake.direction != opposite || snake.size == 1) snake.direction = input;
-//   return;
-// }
-
-// void Controller::HandleInput(bool &running, Snake &snake) const {
-//   SDL_Event e;
-//   while (SDL_PollEvent(&e)) {
-//     if (e.type == SDL_QUIT) {
-//       running = false;
-//     } else if (e.type == SDL_KEYDOWN) {
-//       switch (e.key.keysym.sym) {
-//         case SDLK_UP:
-//           ChangeDirection(snake, Snake::Direction::kUp,
-//                           Snake::Direction::kDown);
-//           break;
-
-//         case SDLK_DOWN:
-//           ChangeDirection(snake, Snake::Direction::kDown,
-//                           Snake::Direction::kUp);
-//           break;
-
-//         case SDLK_LEFT:
-//           ChangeDirection(snake, Snake::Direction::kLeft,
-//                           Snake::Direction::kRight);
-//           break;
-
-//         case SDLK_RIGHT:
-//           ChangeDirection(snake, Snake::Direction::kRight,
-//                           Snake::Direction::kLeft);
-//           break;
-//       }
-//     }
-//   }
-// }

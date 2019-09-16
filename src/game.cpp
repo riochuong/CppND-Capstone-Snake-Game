@@ -14,19 +14,37 @@ SDL_Color BODY_CS[] {
   {255,0,0, 0xFF}
 };
 
+void Game::_RandomizeStartPos() {
+    if (snakes.size() > MAX_NUMBER_OF_SNAKE) {
+        throw std::runtime_error("Only support 2 snakes max");
+    }
+    std::unordered_map<int, int> pos;
+    for (Snake &snake: snakes){
+       int x = random_w(engine);
+       int y = random_h(engine);
+       if ((pos.count(x) > 0) && (pos[x] == y)){
+          continue;
+       }
+       pos[x] = y;
+       std::cout << "Start Pos: x: " << x << "y: " << y << std::endl;
+       snake.head_x = x;
+       snake.head_y = y;
+    }
+}
+
 Game::Game(std::size_t grid_width,
                std::size_t grid_height,
                Renderer *renderer,
-               MenuOpt game_mode,
+               MenuOpt mode,
                std::size_t frame_duration)
 {
   // check game modes to initialize correct number of snake
-  if (game_mode == SINGLE_PLAYER)
+  if (mode == SINGLE_PLAYER)
   {
     this->snakes.push_back(
         Snake(grid_width, grid_height, ARROW, HEAD_CS[0], BODY_CS[0]));
   }
-  else if (game_mode == DUAL_PLAYERS)
+  else if (mode == DUAL_PLAYERS)
   {
     this->snakes.push_back(
         Snake(grid_width, grid_height, ARROW, HEAD_CS[0], BODY_CS[0]));
@@ -34,11 +52,13 @@ Game::Game(std::size_t grid_width,
         Snake(grid_width, grid_height, AWSD, HEAD_CS[1], BODY_CS[1]));
   }
   this->renderer = renderer;
-  this->input_dispatcher = InputDispatcher(game_mode, snakes);
+  this->input_dispatcher = InputDispatcher(mode, snakes);
   this->engine = std::mt19937(dev());
   this->target_frame_duration = frame_duration;
+  this->game_mode = mode;
   random_w = std::uniform_int_distribution<int>(0, static_cast<int>(grid_width));
   random_h = std::uniform_int_distribution<int>(0, static_cast<int>(grid_height));
+  this->_RandomizeStartPos();
 }
 
 // main loop running the game
@@ -108,6 +128,25 @@ void Game::PlaceFood(int num_food)
   }
 }
 
+bool Game::_CheckSnakesCollied() {
+    if (snakes.size() != MAX_NUMBER_OF_SNAKE) {
+       throw std::runtime_error("Cannot not support not equal 2 snakes");
+    } 
+    //TODO: Naive methods for checking collide. Not supper efficient but should work for small games
+    for (SDL_Point &p: snakes[0].body){
+       int new_x = static_cast<int>(snakes[1].head_x);
+       int new_y = static_cast<int>(snakes[1].head_y); 
+       if (new_x == p.x && new_y == p.y) { return true;}
+    }
+    for (SDL_Point &p: snakes[1].body){
+       int new_x = static_cast<int>(snakes[0].head_x);
+       int new_y = static_cast<int>(snakes[0].head_y); 
+       if (new_x == p.x && new_y == p.y) { return true;}
+    }
+    return static_cast<int>(snakes[1].head_y) == static_cast<int>(snakes[0].head_y) 
+            && static_cast<int>(snakes[0].head_x) == static_cast<int>(snakes[1].head_x);
+}
+
 void Game::Update()
 {
   for (Snake &snake : snakes)
@@ -126,6 +165,15 @@ void Game::Update()
   this->scores.clear();
   int remaining_food = 0;
   std::vector<SDL_Point> food_to_remove;
+
+  // check if two snakes collide 
+  if (this->game_mode == DUAL_PLAYERS && this->_CheckSnakesCollied()) {
+     //determine who win the game 
+     //TODO:show winner menu 
+     std::cout<< "There is a winner" << std::endl;
+     exit(1);
+  }
+
   for (int i = 0; i < snakes.size(); i++)
   {
     food_to_remove.clear();

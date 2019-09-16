@@ -39,9 +39,11 @@ class Game {
   std::mt19937 engine;
   std::uniform_int_distribution<int> random_w;
   std::uniform_int_distribution<int> random_h;
-
+  MenuOpt game_mode;   
   void PlaceFood(int num_food);
   void Update();
+  bool _CheckSnakesCollied();
+  void _RandomizeStartPos();
 };
 
 #endif

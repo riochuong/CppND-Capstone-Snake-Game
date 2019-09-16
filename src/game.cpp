@@ -1,7 +1,18 @@
 #include <iostream>
+#include <algorithm>
 #include "game.h"
 
 const int MAX_FOOD_COUNT = 2;
+
+SDL_Color HEAD_CS[] {
+  {64,129,226, 0xFF},
+  {28,192,39, 0xFF}
+};
+
+SDL_Color BODY_CS[] {
+  {255,255,255, 0xFF},
+  {255,0,0, 0xFF}
+};
 
 Game::Game(std::size_t grid_width,
                std::size_t grid_height,
@@ -13,14 +24,14 @@ Game::Game(std::size_t grid_width,
   if (game_mode == SINGLE_PLAYER)
   {
     this->snakes.push_back(
-        Snake(grid_width, grid_height, ARROW));
+        Snake(grid_width, grid_height, ARROW, HEAD_CS[0], BODY_CS[0]));
   }
   else if (game_mode == DUAL_PLAYERS)
   {
     this->snakes.push_back(
-        Snake(grid_width, grid_height, ARROW));
+        Snake(grid_width, grid_height, ARROW, HEAD_CS[0], BODY_CS[0]));
     this->snakes.push_back(
-        Snake(grid_width, grid_height, AWSD));
+        Snake(grid_width, grid_height, AWSD, HEAD_CS[1], BODY_CS[1]));
   }
   this->renderer = renderer;
   this->input_dispatcher = InputDispatcher(game_mode, snakes);
@@ -46,10 +57,10 @@ void Game::Run()
 
     // Input, Update, Render - the main game loop.
     input_dispatcher.DispatchInput();
-    std::cout << "Dispatch input complete" << std::endl;
+    //std::cout << "Dispatch input complete" << std::endl;
     Update();
     this->renderer->Render(snakes, foods);
-    std::cout << "Render complete" << std::endl;
+    //std::cout << "Render complete" << std::endl;
     frame_end = SDL_GetTicks();
 
     // Keep track of how long each loop through the input/update/render cycle
@@ -79,8 +90,7 @@ void Game::PlaceFood(int num_food)
 {
   int x, y;
   bool valid_loc = true;
-  this->foods.clear();
-  while (foods.size() < num_food)
+  for(int i = 0; i < num_food; i++)
   {
     x = random_w(engine);
     y = random_h(engine);
@@ -92,6 +102,7 @@ void Game::PlaceFood(int num_food)
     }
     if (valid_loc)
     {
+      std::cout << "add food to pos" << x << " " << y << std::endl;
       foods.push_back(SDL_Point{x, y});
     }
   }
@@ -106,27 +117,45 @@ void Game::Update()
       return;
     }
   }
-  int food_count = 0;
+  // first time foods get placed in the map
+  if (this->foods.size() == 0) {
+     PlaceFood(MAX_FOOD_COUNT);
+     return;
+  }
+  int eaten_food = 0;
   this->scores.clear();
+  int remaining_food = 0;
+  std::vector<SDL_Point> food_to_remove;
   for (int i = 0; i < snakes.size(); i++)
   {
-    snakes[i].Update();
+    food_to_remove.clear();
     int new_x = static_cast<int>(snakes[i].head_x);
     int new_y = static_cast<int>(snakes[i].head_y);
-
     // Check if there's food over here
-    for (SDL_Point &food : foods)
-    {
-      if (food.x == new_x && food.y == new_y)
+    for (int j = 0; j < foods.size(); j++)
+    {  
+      if (foods[j].x == new_x && foods[j].y == new_y)
       {
         snakes[i].score += 1;
         snakes[i].GrowBody();
-        food_count += 1;
+        eaten_food += 1;
+        food_to_remove.push_back(foods[j]);
       }
     }
-    // update scores
+    // update food lists 
+    for(SDL_Point &food: food_to_remove){
+         foods.erase(std::remove_if(foods.begin(), foods.end(), 
+                      [food](SDL_Point i){return food.x == i.x && food.y == i.y;}));
+    }
+   
+    snakes[i].Update();
     scores.push_back(snakes[i].score);
   }
-  std::cout << "Place " << food_count << " Food" << std::endl;
-  PlaceFood(food_count);
+  
+  remaining_food = MAX_FOOD_COUNT - eaten_food;
+  std::cout << "Place " << MAX_FOOD_COUNT - remaining_food << " foods !" << std::endl;
+  if (remaining_food < MAX_FOOD_COUNT){
+    PlaceFood(MAX_FOOD_COUNT - remaining_food);
+  }
+  
 }

@@ -75,7 +75,7 @@ void InputDispatcher::DispatchInput() {
             consumer->ConsumeInput(e);
         }
         else if (e.type == SDL_QUIT){
-            return;
+            exit(EXIT_SUCCESS);
         }       
     }
 }

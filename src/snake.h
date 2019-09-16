@@ -19,21 +19,25 @@ class Snake: public InputConsumer {
  public:
   
   enum class Direction { kUp, kDown, kLeft, kRight };
-  
-  
   const int DEFAULT_SPEED = 1;
 
-  Snake(int grid_width, int grid_height, SnakeCtrlType control_mode)
+  Snake(int grid_width, 
+        int grid_height, 
+        SnakeCtrlType control_mode,
+        SDL_Color head_c,
+        SDL_Color body_c)
       : grid_width(grid_width),
         grid_height(grid_height),
         head_x(grid_width / 2),
         head_y(grid_height / 2),
-        control_mode(control_mode) {}
+        control_mode(control_mode)
+        {
+          this->head_color = head_c;
+          this->body_color = body_c;
+        }
 
   void Update();
-  
   void ConsumeInput(SDL_Event &event);
-
   void GrowBody();
   bool SnakeCell(int x, int y);
 
@@ -47,6 +51,8 @@ class Snake: public InputConsumer {
   std::vector<SDL_Point> body;
   SnakeCtrlType control_mode;
   int score = 0;
+  SDL_Color head_color;
+  SDL_Color body_color;
 
  private:
   void UpdateHead();

@@ -57,13 +57,19 @@ void Renderer::Render(std::vector<Snake> &snakes, std::vector<SDL_Point> &foods)
   
 
   // Render snake's body
-  SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+  
   for (Snake &snake: snakes){
+      SDL_SetRenderDrawColor(sdl_renderer, 
+                             snake.body_color.r, 
+                             snake.body_color.g, 
+                             snake.body_color.b, 
+                             snake.body_color.a);
+      std::cout<<"Snake " << snake.control_mode << " Body size " <<  snake.body.size() << std::endl;
       for (SDL_Point const &point : snake.body) {
-      block.x = point.x * block.w;
-      block.y = point.y * block.h;
-      SDL_RenderFillRect(sdl_renderer, &block);
-    }
+        block.x = point.x * block.w;
+        block.y = point.y * block.h;
+        SDL_RenderFillRect(sdl_renderer, &block);
+      }
   }
   
 
@@ -72,7 +78,11 @@ void Renderer::Render(std::vector<Snake> &snakes, std::vector<SDL_Point> &foods)
       block.x = static_cast<int>(snake.head_x) * block.w;
       block.y = static_cast<int>(snake.head_y) * block.h;
       if (snake.alive) {
-        SDL_SetRenderDrawColor(sdl_renderer, 0x00, 0x7A, 0xCC, 0xFF);
+        SDL_SetRenderDrawColor(sdl_renderer, 
+                             snake.head_color.r, 
+                             snake.head_color.g, 
+                             snake.head_color.b, 
+                             snake.head_color.a);
       } else {
         SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0x00, 0x00, 0xFF);
       }

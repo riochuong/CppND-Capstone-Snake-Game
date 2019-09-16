@@ -19,6 +19,10 @@ void Snake::Update() {
   }
 }
 
+void Snake::ConsumeInput(SDL_EventType event)  {
+    
+}
+
 void Snake::UpdateHead() {
   switch (direction) {
     case Direction::kUp:

@@ -25,6 +25,7 @@ Game::Game(std::size_t grid_width,
   this->renderer = renderer;
   this->input_dispatcher = InputDispatcher(game_mode, snakes);
   this->engine = std::mt19937(dev());
+  this->target_frame_duration = frame_duration;
   random_w = std::uniform_int_distribution<int>(0, static_cast<int>(grid_width));
   random_h = std::uniform_int_distribution<int>(0, static_cast<int>(grid_height));
 }
@@ -45,8 +46,10 @@ void Game::Run()
 
     // Input, Update, Render - the main game loop.
     input_dispatcher.DispatchInput();
+    std::cout << "Dispatch input complete" << std::endl;
     Update();
     this->renderer->Render(snakes, foods);
+    std::cout << "Render complete" << std::endl;
     frame_end = SDL_GetTicks();
 
     // Keep track of how long each loop through the input/update/render cycle
@@ -103,7 +106,7 @@ void Game::Update()
       return;
     }
   }
-  int food_count;
+  int food_count = 0;
   this->scores.clear();
   for (int i = 0; i < snakes.size(); i++)
   {
@@ -124,5 +127,6 @@ void Game::Update()
     // update scores
     scores.push_back(snakes[i].score);
   }
+  std::cout << "Place " << food_count << " Food" << std::endl;
   PlaceFood(food_count);
 }

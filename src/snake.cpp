@@ -2,6 +2,9 @@
 #include <cmath>
 #include <iostream>
 
+const float MAX_SPEED = 1.0f;
+const float MIN_SPEED = 0.05f;
+
 void Snake::Update() {
   SDL_Point prev_cell{
       static_cast<int>(head_x),
@@ -19,8 +22,39 @@ void Snake::Update() {
   }
 }
 
-void Snake::ConsumeInput(SDL_EventType event)  {
-    
+void Snake::ConsumeInput(SDL_Event &event)  {
+    switch(event.key.keysym.sym){
+        case SDLK_UP:
+        case SDLK_w:
+          this->direction = Direction::kUp;
+          break;   
+        case SDLK_DOWN:
+        case SDLK_s:
+          this->direction = Direction::kDown;
+          break;
+        case SDLK_LEFT:
+        case SDLK_a:
+          this->direction = Direction::kLeft;
+          break;
+        case SDLK_RIGHT:
+        case SDLK_d:
+          this->direction = Direction::kRight;
+          break;  
+        case SDLK_SPACE:
+        case SDLK_RSHIFT:
+          if (this->speed < MAX_SPEED) {
+            this->speed += 0.05;
+            std::cout<< "Increase snake speed to " << this->speed <<  std::endl;
+          }
+          break;
+        case SDLK_RALT:
+        case SDLK_RCTRL:
+          if (this->speed > MIN_SPEED){
+             this->speed -= 0.05;
+          }
+          break;
+    }
+    // UpdateHead();
 }
 
 void Snake::UpdateHead() {

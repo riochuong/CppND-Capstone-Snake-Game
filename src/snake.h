@@ -12,7 +12,7 @@ typedef enum _snake_ctrl_type {
 
 class InputConsumer {
     public:
-        virtual void ConsumeInput (SDL_EventType event) = 0;
+        virtual void ConsumeInput (SDL_Event &event) = 0;
 };
 
 class Snake: public InputConsumer {
@@ -32,7 +32,7 @@ class Snake: public InputConsumer {
 
   void Update();
   
-  void ConsumeInput(SDL_EventType event);
+  void ConsumeInput(SDL_Event &event);
 
   void GrowBody();
   bool SnakeCell(int x, int y);

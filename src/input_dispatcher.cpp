@@ -55,13 +55,29 @@ InputDispatcher::InputDispatcher(MenuOpt menuOpt, std::vector<Snake> &snakes) {
             {SDLK_SPACE, awsd_snake}, // increase speed 
             {SDLK_RALT, awsd_snake} // deccrease speed 
         };
+    } else {
+        throw std::runtime_error("Invalid Mode to Initialize Dispatcher");
     }
-
-    throw std::runtime_error("Invalid Mode to Initialize Dispatcher");
 }
 
 void InputDispatcher::DispatchInput() {
-
+    SDL_Event e;
+    InputConsumer* consumer = NULL; 
+    while(SDL_PollEvent(&e)) {
+        consumer = NULL; 
+        if (e.type == SDL_KEYDOWN){
+            if (consumer_map.count(e.key.keysym.sym) != 1){
+                std::cout << "Key " << e.key.keysym.sym << " is not supported" << std::endl;
+                continue;
+            }
+            std::cout << "Received Key " << e.key.keysym.sym << " is not supported" << std::endl;
+            consumer = consumer_map[e.key.keysym.sym];
+            consumer->ConsumeInput(e);
+        }
+        else if (e.type == SDL_QUIT){
+            return;
+        }       
+    }
 }
 
 

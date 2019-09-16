@@ -24,8 +24,9 @@ MenuOpt ShowMenuAndWait(SDL_Surface* screen, int frame_rate) {
       exit(EXIT_FAILURE);
   }
   TTF_Font* MENUFONT = TTF_OpenFont(FONT_FILE,12);
-  std::cout << "TTF_OpenFont: " << TTF_GetError() << std::endl;
-
+  if (!MENUFONT){
+      std::cout << "TTF_OpenFont Error: " << TTF_GetError() << std::endl;
+  }
   // render font 
   for(int i = 0; i < NUM_MENU; i++){
      menus[i] = TTF_RenderText_Solid(MENUFONT, MENU_TEXTS[i], color[0]); 
@@ -40,10 +41,7 @@ MenuOpt ShowMenuAndWait(SDL_Surface* screen, int frame_rate) {
   while(1) {
     time = SDL_GetTicks();
     // keep checking for options selected from users
-    while(SDL_PollEvent(&pollEvent)) {
-
-        return DUAL_PLAYERS;
-    }
+    return DUAL_PLAYERS;
   }
 
   clean_up_surface:

@@ -7,10 +7,7 @@
 #include "renderer.h"
 #include "snake.h"
 #include "input_dispatcher.h"
-
 const int MAX_NUMBER_OF_SNAKE = 2;
-
-
 
 class Game {
  public:
@@ -26,10 +23,10 @@ class Game {
   void Run();
   std::vector<int> GetScore() { return scores; }
   int GetSize() const;
+  std::vector<Snake> snakes;
 
 
  private:
-  std::vector<Snake> snakes;
   std::vector<SDL_Point> foods;
   InputDispatcher input_dispatcher;
   Renderer* renderer;

@@ -64,7 +64,6 @@ void Renderer::Render(std::vector<Snake> &snakes, std::vector<SDL_Point> &foods)
                              snake.body_color.g, 
                              snake.body_color.b, 
                              snake.body_color.a);
-      std::cout<<"Snake " << snake.control_mode << " Body size " <<  snake.body.size() << std::endl;
       for (SDL_Point const &point : snake.body) {
         block.x = point.x * block.w;
         block.y = point.y * block.h;

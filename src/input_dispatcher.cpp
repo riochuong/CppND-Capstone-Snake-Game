@@ -75,7 +75,6 @@ void InputDispatcher::DispatchInput() {
                 std::cout << "Key " << e.key.keysym.sym << " is not supported" << std::endl;
                 continue;
             }
-            std::cout << "Received Key " << e.key.keysym.sym << " is not supported" << std::endl;
             consumer = consumer_map[e.key.keysym.sym];
             consumer->ConsumeInput(e);
         }

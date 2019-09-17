@@ -83,22 +83,21 @@ void Game::Run()
     //std::cout << "Render complete" << std::endl;
     frame_end = SDL_GetTicks();
 
-    // Keep track of how long each loop through the input/update/render cycle
-    // takes.
+    if (game_mode == SINGLE_PLAYER && (!snakes[0].alive)){
+        running = false;
+        std::cout << "Game over" << std::endl;
+        continue;
+    } 
+
+    if (game_mode == DUAL_PLAYERS && ((!snakes[0].alive) || (!snakes[1].alive))){
+        running = false;
+        std::cout << "Game over" << std::endl;
+        continue;
+    } 
+    
     frame_count++;
     frame_duration = frame_end - frame_start;
-
-    // // After every second, update the window title.
-    // if (frame_end - title_timestamp >= 1000)
-    // {
-    //   renderer->UpdateWindowTitle(scores, frame_count);
-    //   frame_count = 0;
-    //   title_timestamp = frame_end;
-    // }
-
-    // If the time for this frame is too small (i.e. frame_duration is
-    // smaller than the target ms_per_frame), delay the loop to
-    // achieve the correct frame rate.
+  
     if (frame_duration < target_frame_duration)
     {
       SDL_Delay(target_frame_duration - frame_duration);
@@ -122,7 +121,6 @@ void Game::PlaceFood(int num_food)
     }
     if (valid_loc)
     {
-      std::cout << "add food to pos" << x << " " << y << std::endl;
       foods.push_back(SDL_Point{x, y});
     }
   }
@@ -149,6 +147,7 @@ bool Game::_CheckSnakesCollied() {
 
 void Game::Update()
 {
+  
   for (Snake &snake : snakes)
   {
     if (!snake.alive)
@@ -166,13 +165,6 @@ void Game::Update()
   int remaining_food = 0;
   std::vector<SDL_Point> food_to_remove;
 
-  // check if two snakes collide 
-  if (this->game_mode == DUAL_PLAYERS && this->_CheckSnakesCollied()) {
-     //determine who win the game 
-     //TODO:show winner menu 
-     std::cout<< "There is a winner" << std::endl;
-     exit(1);
-  }
 
   for (int i = 0; i < snakes.size(); i++)
   {
@@ -201,9 +193,16 @@ void Game::Update()
   }
   
   remaining_food = MAX_FOOD_COUNT - eaten_food;
-  std::cout << "Place " << MAX_FOOD_COUNT - remaining_food << " foods !" << std::endl;
   if (remaining_food < MAX_FOOD_COUNT){
     PlaceFood(MAX_FOOD_COUNT - remaining_food);
+  }
+
+  // check if two snakes collide 
+  if (this->game_mode == DUAL_PLAYERS && this->_CheckSnakesCollied()) {
+     //stop the game as there is a winner 
+     std::cout<< "There is a winner" << std::endl;
+     snakes[0].alive = false;
+     snakes[1].alive = false;
   }
   
 }

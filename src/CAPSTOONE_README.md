@@ -1,7 +1,5 @@
 
-## CAPSTONE PROJECT
-
-  
+## C++ NANODEGREE CAPSTONE PROJECT
 
 ### SUMMARY:
 I decied to add some fun features for the Snake game as part of the capstone project.

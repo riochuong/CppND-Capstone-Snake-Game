@@ -44,7 +44,6 @@ void Snake::ConsumeInput(SDL_Event &event)  {
         case SDLK_RSHIFT:
           if (this->speed < MAX_SPEED) {
             this->speed += 0.05;
-            std::cout<< "Increase snake speed to " << this->speed <<  std::endl;
           }
           break;
         case SDLK_RALT:

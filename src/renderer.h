@@ -14,6 +14,7 @@ class Renderer {
   void Render(std::vector<Snake> &snakes, std::vector<SDL_Point> &foods);
   void UpdateWindowTitle(int score, int fps);
   SDL_Window * GetWindowSurface() const { return sdl_window;}
+  SDL_Renderer *GetSDLRenderer() {return sdl_renderer;};
 
  private:
   SDL_Window *sdl_window;

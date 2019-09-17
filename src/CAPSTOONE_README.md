@@ -4,8 +4,6 @@
 ### SUMMARY:
 I decied to add some fun features for the Snake game as part of the capstone project.
 
-  
-
 ### NEWLY ADDED FEATURES
 
 - Dual Players Mode for Snake game that allow two players to compete and chasing each other depends on the size of the snake to determine the winner.
@@ -13,6 +11,10 @@ I decied to add some fun features for the Snake game as part of the capstone pro
 - Adding increasing and decreasing speed of snakes for both single and dual modes.
 - Adding screen to show which player is the winner in dual mode or final score in single mode.
 - Modifying **PlaceFood** method to put out number of food matching with number of snakes.
+
+### REQUIRE INSTALLATION
+SDL_ttf: `sudo apt-get install libsdl2-ttf-dev`
+
 
 ### BUILD STEPS
 - cd <project_workspace>

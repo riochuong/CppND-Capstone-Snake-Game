@@ -51,8 +51,8 @@ InputDispatcher::InputDispatcher(MenuOpt menuOpt, std::vector<Snake> &snakes) {
             {SDLK_DOWN, arrow_snake},
             {SDLK_LEFT, arrow_snake},
             {SDLK_RIGHT, arrow_snake},
-            {SDLK_RSHIFT, &snakes[0]}, // increase speed 
-            {SDLK_RCTRL, &snakes[0]}, // decrease speed 
+            {SDLK_RSHIFT, arrow_snake}, // increase speed 
+            {SDLK_RCTRL, arrow_snake}, // decrease speed 
             {SDLK_w, awsd_snake},
             {SDLK_s, awsd_snake},
             {SDLK_a, awsd_snake},
